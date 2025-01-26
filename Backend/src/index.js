@@ -1,6 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
-import connectDB from "./db";
+import cookieParser from "cookie-parser"
+import connectDB from "./db/index.js";
+import { userRouter } from "./route/user.router.js";
+import { profileRouter } from "./route/profile.router.js";
+
 
 dotenv.config({
   path: "./.env",
@@ -10,16 +14,24 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
+
+app.use("/api",userRouter)
+app.use("/api",profileRouter)
 
 app.get("/", (req, res) => {
-  res.send("hello world");
+  res.send({message:"welcome to userguard"});
 });
 
-const port = process.env.PORT || 4000;
+app.use(async(err,req,res,next)=>{
+  console.log(err.stack)
+  res.status(500).json({ success: false, errorMessage: err.message });
+})
 
-connectDB
+const port = process.env.PORT || 4000;
+connectDB()
   .then(() => {
-    app.listen((port) => {
+    app.listen(port,() => {
       console.log(`Server running on PORT:${port}`);
     });
   })
@@ -27,6 +39,6 @@ connectDB
     console.log("MONGODB connection failed!!", err);
   });
 
-app.listen(port, () => {
-  console.log(`Server running on port:${port}`);
-});
+
+
+
