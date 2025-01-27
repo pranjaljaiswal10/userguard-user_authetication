@@ -1,6 +1,6 @@
 
-
 const PrivateRoute = () => {
+  
   return (
   <></>
   )

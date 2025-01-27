@@ -6,7 +6,7 @@ const userRouter=express.Router()
 
 userRouter.post("/signup",async(req,res)=>{
     const {email,username,password,profilePictureUrl}=req.body
-    if([username,email,password].some(item=>item.trim()==="")){
+    if([username,email,password].some(item=>item?.trim()==="")){
   res.status(401).json({message:"All field are required"})
     }
     const user=await User.findOne({
@@ -30,10 +30,8 @@ userRouter.post("/signup",async(req,res)=>{
 })
 
 userRouter.post("/login",async(req,res)=>{
-    const {username,email,password}=req.body
-    const user=await User.findOne({
-       $or:[{username},{email}] 
-    })
+    const {email,password}=req.body
+    const user=await User.findOne({email})
     if(!user){
        return res.status(400).json({message:"User  not found,first create account"})
     }
