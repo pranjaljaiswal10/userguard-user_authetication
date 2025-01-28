@@ -2,7 +2,7 @@ export const isValidData=(form)=>{
   const {username,email,password}=form
   const error={}
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/;
+  const usernameRegex = /^[a-zA-Z][a-zA-Z]{2,15}$/;
   if(!(emailRegex?.test(email))){
     error["email"]="Please enter a valid email"
   }

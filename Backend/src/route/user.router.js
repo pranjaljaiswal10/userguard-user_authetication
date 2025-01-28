@@ -5,7 +5,7 @@ import { User } from "../models/user.module.js";
 const userRouter=express.Router()
 
 userRouter.post("/signup",async(req,res)=>{
-    const {email,username,password,profilePictureUrl}=req.body
+    const {email,username,password,profilePictureUrl,contact,socialMediaUrl}=req.body
     if([username,email,password].some(item=>item?.trim()==="")){
   res.status(401).json({message:"All field are required"})
     }
@@ -17,7 +17,7 @@ userRouter.post("/signup",async(req,res)=>{
     }
         const hashPassword=await bcrypt.hash(password,10)
         const newUser=new User({
-            username,email,password:hashPassword,profilePictureUrl
+            username,email,password:hashPassword,profilePictureUrl,contact,socialMediaUrl
         })
         const savedUser=await newUser.save()
         const token=savedUser.getJWT()

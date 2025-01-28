@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { BASE_URL } from "../utils/constant";
 import { isValidData } from "../utils/validation";
+import { useContext } from "react";
+import { UserContext } from "../utils/usercontext.jsx";
 
 const Signin = () => {
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+  const { dispatch } = useContext(UserContext);
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -15,8 +18,8 @@ const Signin = () => {
   };
   const handleSubmit = async (e) => {
     try {
-      e.preventDefault()
-      isValidData(form)
+      e.preventDefault();
+      isValidData(form);
       const response = await fetch(`${BASE_URL}/api/login`, {
         method: "POST",
         headers: {
@@ -25,6 +28,7 @@ const Signin = () => {
         body: JSON.stringify(form),
       });
       const data = response.json();
+      dispatch({ type: "ADD_USER", payload: data });
       console.log(data);
     } catch (error) {
       console.log(error.message);
@@ -34,7 +38,7 @@ const Signin = () => {
     <>
       <h1>Login</h1>
       <p>Before we start,please,login into your account</p>
-      <form onSubmit={(e)=>handleSubmit(e)}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <label htmlFor="email">
           Email:
           <input

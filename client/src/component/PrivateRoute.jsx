@@ -1,9 +1,9 @@
+import { useContext } from "react"
+import { UserContext } from "../../../Backend/src/utils/userContext"
 
 const PrivateRoute = () => {
-  
-  return (
-  <></>
-  )
+  const {state}=useContext(UserContext)
+
 }
 
 export default PrivateRoute

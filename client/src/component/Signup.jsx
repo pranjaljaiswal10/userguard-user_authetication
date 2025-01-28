@@ -1,14 +1,17 @@
-import { useState } from "react";
-import { BASE_URL } from "../utils/constant";
+import { useContext, useState } from "react";
+import { BASE_URL, userDataList } from "../utils/constant";
 import { isValidData } from "../utils/validation";
+
 
 const Signup = () => {
   const [form, setForm] = useState({
-    username:"",
+    username: "",
     email: "",
     password: "",
+    contact: "",
+    socialMediaUrl: "",
   });
-  const [error,setError]=useState(null)
+  const [error, setError] = useState(null);
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -17,13 +20,13 @@ const Signup = () => {
   };
   const handleSubmit = async (e) => {
     try {
-      e.preventDefault()
-        const errorList=isValidData(form);
-        if(errorList){   
-          setError(errorList)
-          return
-        }
-        const response = await fetch(`${BASE_URL}/api/signup`, {
+      e.preventDefault();
+      const errorList = isValidData(form);
+      if (errorList) {
+        setError(errorList);
+        return;
+      }
+      const response = await fetch(`${BASE_URL}/api/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,37 +43,22 @@ const Signup = () => {
     <>
       <h1>Register</h1>
       <p>Before we start,please create your account</p>
-      <form onSubmit={(e)=>handleSubmit(e)}>
-        <label htmlFor="username">
-          Username:
-          <input
-            type="text"
-            value={form.username}
-            id="username"
-            onChange={(e) => handleChange(e)}
-          />
-        </label>
-        {error && (<p>{error?.username}</p>)}
-        <label htmlFor="email">
-          Email:
-          <input
-            type="email"
-            value={form.email}
-            id="email"
-            onChange={(e) => handleChange(e)}
-          />
-        </label>
-        {error && (<p>{error?.emailid}</p>)}
-        <label htmlFor="password">
-          Password:
-          <input
-            type="text"
-            value={form.password}
-            id="password"
-            onChange={(e) => handleChange(e)}
-          />
-        </label>
-        {error &&(<p>{error?.password}</p>)}
+      <form onSubmit={(e) => handleSubmit(e)}>
+        {userDataList.map((item, index) => (
+          <div key={index}>
+            <label htmlFor={item.field}>
+              {item.field}
+              <input
+                type="text"
+                id={item.field}
+                value={form[item.field]}
+                placeholder={item.placeholder}
+                onChange={(e) => handleChange(e)}
+              />
+            </label>
+            {error["field"] && <p>{error?.item?.field}</p>}
+          </div>
+        ))}
         <button type="submit">Create account</button>
       </form>
     </>
