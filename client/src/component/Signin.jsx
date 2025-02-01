@@ -3,35 +3,44 @@ import { BASE_URL } from "../utils/constant";
 import { isValidData } from "../utils/validation";
 import { useContext } from "react";
 import { UserContext } from "../utils/usercontext.jsx";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Signin = () => {
-  const [form, setForm] = useState({
+  const [formData, setformData] = useState({
     email: "",
     password: "",
   });
-  const { dispatch } = useContext(UserContext);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const {dispatch} = useContext(UserContext);
+  const location=useLocation()
+  const navigate=useNavigate();
   const handleChange = (e) => {
-    setForm({
-      ...form,
+    setformData({
+      ...formData,
       [e.target.id]: e.target.value,
     });
   };
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      isValidData(form);
+      const errorList = isValidData(formData);
+      if (errorList) {
+        setErrorMessage(errorList);
+        return;
+      }
       const response = await fetch(`${BASE_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(formData),
       });
-      const data = response.json();
-      dispatch({ type: "ADD_USER", payload: data });
-      console.log(data);
+      const json =await response.json();
+      console.log(json)
+      dispatch({ type: "LOGIN", payload: json });
+      navigate(location?.state?.from?.pathname || "/")
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
     }
   };
   return (
@@ -45,20 +54,22 @@ const Signin = () => {
             type="text"
             id="email"
             placeholder="Enter a email..."
-            value={form.email}
+            value={formData.email}
             onChange={(e) => handleChange(e)}
           />
         </label>
+        {errorMessage && <p>{errorMessage?.email}</p>}
         <label htmlFor="password">
           Password
           <input
-            type="text"
+            type="password"
             id="password"
             placeholder="Enter a password..."
-            value={form.password}
+            value={formData.password}
             onChange={(e) => handleChange(e)}
           />
         </label>
+        {errorMessage && <p>{errorMessage?.password}</p>}
         <button type="submit" className="cursor-pointer">
           Log in
         </button>

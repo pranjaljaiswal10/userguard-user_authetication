@@ -1,33 +1,39 @@
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Outlet,
-  Route,
-} from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import "./App.css";
 import Home from "./component/Home";
 import Signup from "./component/Signup";
 import Signin from "./component/Signin";
 import Profile from "./component/Profile";
-import { UserProvider } from "./utils/usercontext.jsx";
+import PrivateRoute from "./component/PrivateRoute.jsx";
+import Layout from "./Layout.jsx";
 
-const App = createBrowserRouter(
-  createRoutesFromElements(
-    <>
-      <Route path="/" element={<Home />} />
-      <Route path="/api/signup" element={<Signup />} />
-      <Route path="/api/login" element={<Signin />} />
-        <Route
-        element={
-          <UserProvider>
-            <Outlet />
-          </UserProvider>
-        }
-      ></Route>
-        <Route path="/api/signup" element={<Profile />} />
-      
-    </>
-  )
-);
+const App = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/signup",
+        element: <Signup />,
+      },
+      {
+        path: "/login",
+        element: <Signin />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <PrivateRoute>
+            <Profile />
+           </PrivateRoute>
+        ),
+      },
+    ],
+  },
+]);
 
 export default App;

@@ -22,12 +22,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       default:
         "https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg",
-  },contact:{
-    type:Number,
-    requireed:true,
-    unique:true
-  },socialMediaUrl:String,
-},
+    },
+    contact: {
+      type: Number,
+      required: [true,"Mobile Number is required"],
+      unique: true,
+    },
+    socialMediaUrl: String,
+  },
   { timestamps: true }
 );
 

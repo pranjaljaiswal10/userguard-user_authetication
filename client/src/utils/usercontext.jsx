@@ -2,22 +2,23 @@ import { createContext, useReducer } from "react";
 
 const UserContext = createContext();
 
-const intialState = null
+const initialState = null
 
 function reducer(state, action) {
   const { type, payload } = action;
+ 
   switch (type) {
-    case "ADD_USER":
-return {...state,userData:payload};
-  case "REMOVE_USER":
-    return state.userData=null
+    case "LOGIN":
+    return  state,  payload ;
+     case "LOGOUT":
+      return state=null;
     default:
-      return state;
+    throw new Error("no Data")
   }
 }
 
 const UserProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, intialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <UserContext.Provider value={{ state, dispatch }}>
       {children}
@@ -25,4 +26,4 @@ const UserProvider = ({ children }) => {
   );
 };
 
-export { UserProvider, UserContext }
+export { UserContext, UserProvider };

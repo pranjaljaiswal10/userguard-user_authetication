@@ -1,27 +1,28 @@
-import { useContext, useState } from "react";
-import { BASE_URL, userDataList } from "../utils/constant";
+import { useState } from "react";
+import {useNavigate } from "react-router-dom"
+import { BASE_URL } from "../utils/constant";
 import { isValidData } from "../utils/validation";
 
-
 const Signup = () => {
-  const [form, setForm] = useState({
+  const [formData, setformData] = useState({
     username: "",
     email: "",
     password: "",
     contact: "",
     socialMediaUrl: "",
   });
+  const navigate=useNavigate()
   const [error, setError] = useState(null);
   const handleChange = (e) => {
-    setForm({
-      ...form,
+    setformData({
+      ...formData,
       [e.target.id]: e.target.value,
     });
   };
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      const errorList = isValidData(form);
+      const errorList = isValidData(formData);
       if (errorList) {
         setError(errorList);
         return;
@@ -31,10 +32,11 @@ const Signup = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(formData),
       });
       const data = await response.json();
-      console.log(data);
+      console.log(data)
+      navigate("/api/login")
     } catch (error) {
       console.log(error);
     }
@@ -44,22 +46,56 @@ const Signup = () => {
       <h1>Register</h1>
       <p>Before we start,please create your account</p>
       <form onSubmit={(e) => handleSubmit(e)}>
-        {userDataList.map((item, index) => (
-          <div key={index}>
-            <label htmlFor={item.field}>
-              {item.field}
-              <input
-                type="text"
-                id={item.field}
-                value={form[item.field]}
-                placeholder={item.placeholder}
-                onChange={(e) => handleChange(e)}
-              />
-            </label>
-            {error["field"] && <p>{error?.item?.field}</p>}
-          </div>
-        ))}
-        <button type="submit">Create account</button>
+        <label htmlFor="username">
+          username:
+          <input
+            type="text"
+            id="username"
+            value={formData.username}
+            onChange={(e) => handleChange(e)}
+          />
+        </label>
+        {error && <p>{error?.username}</p>}
+        <label htmlFor="email">
+          email:
+          <input
+            type="text"
+            id="email"
+            value={formData.email}
+            onChange={(e) => handleChange(e)}
+          />
+        </label>
+        {error && <p>{error?.email}</p>}
+        <label htmlFor="password">
+          password:
+          <input
+            type="text"
+            id="password"
+            value={formData.password}
+            onChange={(e) => handleChange(e)}
+          />
+        </label>
+        {error && <p>{error?.password}</p>}
+        <label htmlFor="contact">
+          contact:
+          <input
+            type="text"
+            id="contact"
+            value={formData.contact}
+            onChange={(e) => handleChange(e)}
+          />
+        </label>
+        {error && <p>{error?.contact}</p>}
+        <label htmlFor="socialMediaUrl">
+          socialMediaUrl:
+          <input
+            type="text"
+            id="socialMediaUrl"
+            value={formData.socialMediaUrl}
+            onChange={(e) => handleChange(e)}
+          />
+        </label>
+        <button type="submit" className="cursor-pointer">Create account</button>
       </form>
     </>
   );
